@@ -7,6 +7,7 @@ const port = 3000;
 require("dotenv").config();
 
 // middleware
+app.use(express.static("./public"));
 app.use(express.json());
 // routes to be used
 app.use("/api/v1/tasks", router);

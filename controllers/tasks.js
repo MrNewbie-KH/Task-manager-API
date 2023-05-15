@@ -8,7 +8,6 @@ const getAllTasks = async function (req, res) {
   } catch (error) {
     res.status(500).json({ msg: error });
   }
-  res.send("job already done, tasks are working now");
 };
 // ======
 const createTask = async function (req, res) {
@@ -45,8 +44,20 @@ const deleteTask = async function (req, res) {
   }
 };
 // ======
-const updateTask = function (req, res) {
-  res.send("update task");
+const updateTask = async function (req, res) {
+  try {
+    const { id } = req.params;
+    const taskUpdate = await TASK.findByIdAndUpdate({ _id: id }, req.body, {
+      runValidators: true,
+      new: true,
+    });
+    if (!taskUpdate) {
+      return res.status(404).json({ msg: "task not found to be updated" });
+    }
+    res.status(200).json({ taskUpdate });
+  } catch (error) {
+    res.status(500).json({ msg: "server error my friend" });
+  }
 };
 // ======
 
