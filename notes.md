@@ -37,7 +37,49 @@
    - findOne({id:"the object id"})
    - findOneAndUpdate({id:"the object id"})
    - findOneAndDelete()
-9. what is the differencs between ?
+9. why do we need asyncwrapper?
+
+   - to stop redundancy in the project
+   - enhance the try catch blocks by adding them inside the wrapper
+     so instead of this code
+
+   ```js
+   const getAllTasks = async function (req, res) {
+     try {
+       const tasks = await TASK.find({});
+       res.status(200).json({ tasks });
+     } catch (error) {
+       res.status(500).json({ msg: error });
+     }
+   };
+   ```
+
+   we gonna use this instead
+   first in async.js i'm gonna use asyncwrapper function
+
+   ```js
+   consr asyncwrapper=(callback)=>{
+      return async (req,res,next)=>{
+         try{
+            await callback(req,res,next);
+         }
+         catch(error){
+            next(error)
+         }
+      }
+   }
+   ```
+
+   ad in the controller :
+
+   ```js
+   const getAllTasks = asyncwrapper(async (req, res) => {
+     const tasks = await TASK.find({});
+     res.status(200).json({ tasks });
+   });
+   ```
+
+10. what is the differencs between ?
 
 ```js
 res.status(200).json({ taskWanted });
@@ -71,6 +113,8 @@ In the second case, res.status(200).json(taskWanted), you are **directly sending
 - we are calling start function at the app right? then we gonna require dotenv at app.js too
 - we gonna use schema in order to be able to have db structure each record has name, id, completed or not no array of color or number of fingers
 - when i was handlimg the getOneTask method iused two different error messages one indicating server error and the other one indicating no task with the given id
+- patch is for partial update
+- async wrapper function to stop redundancy
 - in the app.js we use :
 
 ```js
